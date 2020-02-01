@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script>
+		window.onload = function() {
+		  var context = new AudioContext();
+		  var music = document.getElementById("au");
+		  document.getElementsByTagName("body")[0].onclick = function(){
+		  	music.play();
+		  }
+		}
+	</script>
+	<title>Tower Defense</title>
+	
+	<style type="text/css">
+	 	body{
+	 		margin: 0;
+	 		display: flex;
+	 		flex-direction: column;
+	 		text-align: center;
+	 		height: 100vh;
+	 	}
+	 	.head{
+	 		flex: 0 1 80px;
+	 		background: #2B7250;
+;
+	 	}
+	 	.main{
+	 		flex: 1 auto;
+	 		color: black;
+	 		background-color: #525252;
+	 	}
+	 	.foot{
+	 		flex:0 1 40px;
+	 		text-align: left;
+	 		background: #2B7250;
+	 	}
+ 	</style>
+</head>
+<body>
+	<audio autoplay loop="true" autoplay="true" id="au">
+			<source src="start.mp3" type="audio/mpeg">
+		</audio>
+	<div class="head">
+	 		<h1 style="color: white">TOWURU DEPENSU</h1>
+	 	</div>
+		<div class="main">
+	 		<img src="towergif.gif" height="400" width="200">
+	 		<h3 style="color: white">Tower Defense</h3>
+	 		<button type="button" onclick="window.location.href = 'GRAFGA FINALZ STAGE 1.html';">Start Game!</button>
+		</div>
+		<div class="foot">
+	 		<p style="color: white">TOWURU DEPENSU V1.0 - Grafika Game 2019</p>
+	 		<p style="color: white">71170135 71170136 71170145 71170163</p>
+	 	</div>
+	
+</body>
+</html>

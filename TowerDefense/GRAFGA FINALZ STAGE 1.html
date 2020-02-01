@@ -1,0 +1,595 @@
+<html>
+	<head>
+		<title>Stage 1</title>
+	</head>
+	<style>
+		#myCanvas{
+			border: 2px solid #000000;
+		}
+		#myCanvas{
+			float: left;
+		}
+		.tower{
+			width: 600px;
+			display: inline-block;
+		}
+	</style>
+	<body>
+		<audio autoplay loop="true" id="au">
+			<source src="wildwest.mp3" type="audio/mpeg">
+		</audio>
+		<audio autoplay id="auend">
+			<source src="clear.mp3" type="audio/mpeg">
+		</audio>
+		<img src="map.png" id="map" hidden="true" >
+		<canvas id="myCanvas" width="600" height="600">
+			
+		</canvas>
+		<div width="800" height="600">
+				<h2>Stage 1</h2>
+				<h2 id="uang">Money: 100</h2>
+				 <img id="tower1img" src="tower1.png" width="40" height="40" onclick="beli1()">
+				 <img id="tower2img" src="tower2.png" width="40" height="40" onclick="beli2()">
+				 <img id="tower3img" src="tower3.png" width="40" height="40" onclick="beli3()">
+		</div>
+		<div class='tower' style='background-color: green;'>
+
+				Tower 1
+
+				<br>
+
+				Range: 30<span id='tower1range'></span>
+
+				<br>
+
+				Damage: 4<span id='tower1damage'></span>
+
+				
+
+				<br>
+
+				Cost: 20<span id='tower1cost'></span>
+
+		</div>
+
+				<p>
+
+		<div class='tower' style='background-color: brown;'>
+
+				Tower 2
+
+				<br>
+
+				Range: 20<span id='tower2range'></span>
+
+				<br>
+
+				Damage: 25<span id='tower2damage'></span>
+
+				
+
+				<br>
+
+				Cost: 30<span id='tower2cost'></span>
+
+		</div>
+
+				<p>
+
+		<div class='tower' style='background-color:aqua;'>
+
+				Tower 3
+
+				<br>
+
+				Range: 15<span id='tower3range'></span>
+
+				<br>
+
+				Damage: 30<span id='tower3damage'></span>
+
+				
+
+				<br>
+
+				Cost: 35<span id='tower3cost'></span>
+
+		</div>
+		<script>
+			//audio
+			var music = document.getElementById("au");
+			var ending = document.getElementById("auend");
+			document.getElementsByTagName("body")[0].onclick = function(){
+				music.play();
+			}
+			//MODAL CUKS
+			var udahmenang=0;
+			var cekTower=0;
+			var money = 100;
+			var jmltower=0;
+			var range = [];
+			var tulisanmoney = document.getElementById("uang");
+			/* -- pemberian konteks ke kanvas -- */
+			var canvas = document.getElementById("myCanvas");
+			var ctx = canvas.getContext("2d");
+			/* -- variabel-variabel awal -- */
+			/* -- struktur data objek -- */
+			var jmlbola = 30;
+			var jarijaribola = 10;
+			var bola = new Array;
+			for(var i=0; i<jmlbola; i++){
+				xawal = -10 + jarijaribola - i*100;
+				yawal =  2*jarijaribola+60;
+				wawal = "#ffff00";
+				sawal = 0.5;
+				if(i==jmlbola-1){
+						bola[i] = {
+						x: xawal,
+						y: yawal,
+						nyawa: 5500+270*i,
+						warna: "#000000",
+						sudut: sawal,
+						offset: 0,
+						status: 1,
+						jarijari: 20
+					};
+					break;
+				}
+				bola[i] = {
+					x: xawal,
+					y: yawal,
+					nyawa: 2500+180*i,
+					warna: wawal,
+					sudut: sawal,
+					offset: 0,
+					status: 1,
+					jarijari: jarijaribola
+				};
+			}
+			var peluru = [];
+			//buatpeluru(xtower,ytower,sawal,offset,maju)
+			function buatpeluru(xtower,ytower,sawal,offset){
+				//wawal = "#"+((1<<24)*Math.random()|0).toString(16);
+				//sawal = Math.random() * 2;
+				pelor = {
+					// x: xbola + 0*Math.cos(sawal * Math.PI)-maju*Math.sin(sawal * Math.PI),
+					// y: ybola + 0*Math.sin(sawal * Math.PI)+maju*Math.cos(sawal *Math.PI),
+					x: xtower,
+					y: ytower,
+					warna: "#0000ff",
+					sudut: sawal,
+					offset: offset
+				};
+				peluru.push(pelor);
+			}
+
+			var tower = [];
+			// //tower
+			// var jmltower=3;
+			// var tower=[];
+			// for(var i=0;i<jmltower;i++){
+			// 	tower[i]={
+			// 		document.getElementById("tower1img")
+			// 	}
+			// }
+
+			// struktur data objek peluru
+			var jarijaripeluru = 5;
+			var peluru = [];
+			var ditekan1 = false;
+			var ditekan2 = false;
+			var ditekan3 = false;
+			function beli1(){
+				
+				if(money>=20){
+					money-=20;
+					//alert(money);
+					uang.innerHTML = "Money: "+money;
+					ditekan1=true;
+
+				}
+			}
+			function beli2(){
+								if(money>=30){
+					money-=30;
+					//alert(money);
+					uang.innerHTML = "Money: "+money;
+					ditekan2=true;
+
+				}
+				
+			}
+			function beli3(){
+				
+				if(money>=35){
+					money-=35;
+					//alert(money);
+					uang.innerHTML = "Money: "+money;
+					ditekan3=true;
+
+				}
+			}
+			function sudutRel(objasal, objtujuan){
+				jarakx = objtujuan.x - objasal.x;
+				jaraky = objtujuan.y - objasal.y;
+				sdt = objasal.sudut * Math.PI;
+				if(jarakx < 0){
+					sdt = 1.5 * Math.PI + Math.atan(jaraky/jarakx);
+				} else {
+					sdt = 0.5 * Math.PI + Math.atan(jaraky/jarakx);
+				}
+				//normalisasi sudut untuk disimpan di atribut objek
+				sdt = sdt / Math.PI;
+				if(sdt > 2){ sdt = sdt - 2; }
+				if(sdt < 0){ sdt = sdt + 2; }
+				return sdt;
+			}
+			
+			function euDist(objek1,objek2){
+				jarak = Math.sqrt(Math.pow(objek1.x-objek2.x,2)+Math.pow(objek1.y-objek2.y,2));
+				return jarak;
+			}
+			function euDistSpecial(objek1,objek2){
+				jarak = Math.sqrt(Math.pow(objek1.posx-objek2.x,2)+Math.pow(objek1.posy-objek2.y,2));
+				return jarak;
+			}
+
+			canvas.addEventListener("mousedown", pasangtower, true)
+			function pasangtower(e){
+				titik = {
+					x:e.pageX,
+					y:e.pageY
+				}
+				if(titik.y<57){
+					if(cekTower==1){
+						var img = document.getElementById("tower1img");
+						tower[jmltower] = {
+							posx: titik.x-25,
+							posy: titik.y-25,
+							atk: 4,
+							range: 300,
+							rate: 10,
+							type: 1,
+							warna: "rgba(0,255,0,0.05)"
+						}
+						jmltower++;
+						cekTower=0;
+					}else if(cekTower==2){
+						var img = document.getElementById("tower2img");
+						tower[jmltower] = {
+							posx: titik.x-25,
+							posy: titik.y-25,
+							atk: 25,
+							range: 200,
+							rate: 20,
+							type: 2,
+							warna: "rgba(255,0,0,0.05)"
+						}
+						jmltower++;
+						cekTower=0;
+					}
+					else if(cekTower==3){
+						var img = document.getElementById("tower3img");
+						tower[jmltower] = {
+							posx: titik.x-25,
+							posy: titik.y-25,
+							atk: 30,
+							range: 150,
+							rate: 5,
+							type: 3,
+							warna: "rgba(0,0,0,0.05)"
+						}
+						jmltower++;
+						cekTower=0;
+					}
+				}
+				else if(titik.x<500&&(titik.y>128&&titik.y<471)){
+					if(cekTower==1){
+						var img = document.getElementById("tower1img");
+						tower[jmltower] = {
+							posx: titik.x-25,
+							posy: titik.y-25,
+							atk: 4,
+							range: 300,
+							rate: 10,
+							type: 1,
+							warna: "rgba(0,255,0,0.05)"
+						}
+						jmltower++;
+						cekTower=0;
+					}else if(cekTower==2){
+						var img = document.getElementById("tower2img");
+						tower[jmltower] = {
+							posx: titik.x-25,
+							posy: titik.y-25,
+							atk: 25,
+							range: 200,
+							rate: 20,
+							type: 2,
+							warna: "rgba(255,0,0,0.05)"
+						}
+						jmltower++;
+						cekTower=0;
+					}
+					else if(cekTower==3){
+						var img = document.getElementById("tower3img");
+						tower[jmltower] = {
+							posx: titik.x-25,
+							posy: titik.y-25,
+							atk: 30,
+							range: 150,
+							rate: 5,
+							type: 3,
+							warna: "rgba(0,0,0,0.05)"
+						}
+						jmltower++;
+						cekTower=0;
+					}
+				}else if(titik.y>557){
+					if(cekTower==1){
+						var img = document.getElementById("tower1img");
+						tower[jmltower] = {
+							posx: titik.x-25,
+							posy: titik.y-25,
+							atk: 4,
+							range: 300,
+							rate: 10,
+							type: 1,
+							warna: "rgba(0,255,0,0.05)"
+						}
+						jmltower++;
+						cekTower=0;
+					}else if(cekTower==2){
+						var img = document.getElementById("tower2img");
+						tower[jmltower] = {
+							posx: titik.x-25,
+							posy: titik.y-25,
+							atk: 25,
+							range: 200,
+							rate: 20,
+							type: 2,
+							warna: "rgba(255,0,0,0.05)"
+						}
+						jmltower++;
+						cekTower=0;
+					}
+					else if(cekTower==3){
+						var img = document.getElementById("tower3img");
+						tower[jmltower] = {
+							posx: titik.x-25,
+							posy: titik.y-25,
+							atk: 30,
+							range: 150,
+							rate: 5,
+							type: 3,
+							warna: "rgba(0,0,0,0.05)"
+						}
+						jmltower++;
+						cekTower=0;
+					}
+				}
+				
+			}
+			/* -- nilai awal -- */
+			//geseran bernilai positif-negatif sebagai dasar offset
+			//geseran_x = 0;
+			//geseran_y = 0;
+			//geseran = 0;
+			var ditekan = false;
+			document.getElementsByTagName("body")[0].addEventListener("mousedown", mousedn, true);
+			function mousedn(e){
+				//variabel e memiliki atribut koordinat mouse pageX dan pageY
+				titik = {
+					x: e.pageX - 10,
+					y: e.pageY - 10
+				}
+				if(ditekan1==true){
+					//console.log("1");
+					cekTower=1;
+					ditekan1=false;
+				}else if(ditekan2==true){
+					//console.log("2");
+					cekTower=2;
+					ditekan2=false;
+				}else if(ditekan3==true){
+					//console.log("3");
+					cekTower=3;
+					ditekan3=false;
+				}
+				
+			}
+			document.getElementsByTagName("body")[0].addEventListener("mousemove", mousemv, true);
+			function mousemv(e){
+				//gerakin buat naruh tower
+				titik = {
+					x: e.pageX - 10,
+					y: e.pageY - 10
+				}
+				if(ditekan1==true){
+					//alert("1");
+					ditekan1==false;
+				}else if(ditekan2==true){
+					//alert("2");
+					ditekan2==false;
+				}else if(ditekan3==true){
+					//alert("3");
+					ditekan2==false;
+				}
+				
+			}
+			
+			function changeTower(n) {
+				currentTower = n;
+			}
+			
+
+			/* -- penggambaran dinamis -- */
+			function gambarkan(){
+				
+				ctx.clearRect(0,0,800,600);
+				var mapback = document.getElementById('map');
+				ctx.drawImage(map,0,0,600,600);
+				/* background dst masuk sini */
+
+				/* menggambar objek dinamisnya */
+
+				//gambar towerr
+				for(i=0; i<jmltower; i++){
+					// console.log(tower.toString());
+
+					ctx.save();
+					if(tower[i].type==1){
+						//console.log("satu");
+						ctx.drawImage(tower1img, tower[i].posx, tower[i].posy);
+					}if(tower[i].type==2){
+						//console.log("dua");
+							ctx.drawImage(tower2img,tower[i].posx, tower[i].posy);
+					}if(tower[i].type==3){
+							ctx.drawImage(tower3img, tower[i].posx, tower[i].posy);
+					}
+					ctx.beginPath();
+					ctx.arc(tower[i].posx+25,tower[i].posy+25,tower[i].range,0*Math.PI,2*Math.PI, false);	
+					ctx.lineTo(0,0);	
+					ctx.closePath();
+
+					ctx.fillStyle=tower[i].warna;
+					ctx.fill();
+					ctx.restore();
+				}
+
+				//Gambar viewing window
+
+
+
+				// menggambar bola
+				for(i=0;i<jmlbola;i++){
+					ctx.save();
+					// ctx.fillText("Geseran: "+bola[i].offset, 500,50+(i*25));
+					// ctx.fillText("Sudut: "+bola[i].sudut, 500,60+(i*25));
+					//update nilai geseran secara kontinu
+					bola[i].x = bola[i].x + 0*Math.cos(bola[i].sudut * Math.PI)-bola[i].offset*Math.sin(bola[i].sudut * Math.PI);
+					bola[i].y = bola[i].y + 0*Math.sin(bola[i].sudut * Math.PI)+bola[i].offset*Math.cos(bola[i].sudut *Math.PI);
+					
+					//geser kanvas sesuai posisi koordinat bola pada sumbu 	
+					//bola geser terus (BOL ITU MUSUH)
+					if(bola[i].x<530 && bola[i].y<100){
+						bola[i].x+=2;
+					}else if(bola[i].x>=530 && bola[i].y<515){
+						bola[i].y+=2;
+					}else if(bola[i].x>-30 && bola[i].y>=400){
+						bola[i].x-=2;
+					}else if(bola[i].x<0 && bola[i].y>=400){
+						if(bola[i].nyawa>0){
+							window.location.href="Awal.html";
+						}
+					}
+
+					if(bola[i].nyawa<=0){
+						bola[i].jarijari = 0;
+					}
+					ctx.translate(bola[i].x, bola[i].y);
+					//rotasi hadap bola	
+					ctx.rotate(bola[i].sudut * Math.PI);	
+					/* digambar bolanya */
+					ctx.beginPath();
+					ctx.arc(0,0,bola[i].jarijari,0,2*Math.PI, false);		//jari-jarinya 20
+					ctx.closePath();
+					ctx.fillStyle = bola[i].warna;
+					ctx.fill();
+					
+					
+					ctx.strokeStyle="#666666";
+					ctx.stroke();
+					ctx.fill();
+						
+
+					ctx.restore();
+				}
+				//MASUK RANGE TEMBAK
+				for(var i =0 ; i<jmltower;i++){
+					for(var j=0;j<jmlbola;j++){
+						if(euDistSpecial(tower[i], bola[j])<tower[i].range-20){
+							if(bola[j].nyawa>0){
+								ctx.moveTo(tower[i].posx+25, tower[i].posy+25);
+								ctx.lineTo(bola[j].x,bola[j].y);
+								ctx.strokeStyle="#ffffff";
+								
+								ctx.lineWidth = 3;
+								ctx.stroke();
+								bzz=1;
+							}
+							if(bola[j].nyawa<=0 && bola[j].status==1){
+								money+=10;
+								document.getElementById("uang").innerHTML="Money :"+money;
+								bola[j].status=0;
+							}else{
+								var sudut = (1+sudutRel(tower[i], bola[j]));
+								//buatpeluru(tower[i].posx,tower[i].posy,sudut,-2);
+							
+								bola[j].nyawa -= tower[i].atk;
+								
+							}
+							if(bzz==1 && tower[i].type!=1){
+								bzz=0;
+								break;
+							}
+						}
+					}
+				}
+				
+
+				
+				// menggambar peluru
+				if(peluru.length>0){
+					for(i=0;i<peluru.length;i++){
+						ctx.save();
+						// ctx.fillText("Geseran: "+bola[i].offset, 500,50+(i*25));
+						// ctx.fillText("Sudut: "+bola[i].sudut, 500,60+(i*25));
+						//update nilai geseran secara kontinu
+						peluru[i].x = peluru[i].x + 0*Math.cos(peluru[i].sudut * Math.PI)-peluru[i].offset*Math.sin(peluru[i].sudut * Math.PI);
+						peluru[i].y = peluru[i].y + 0*Math.sin(peluru[i].sudut * Math.PI)+peluru[i].offset*Math.cos(peluru[i].sudut *Math.PI);
+						
+						//geser kanvas sesuai posisi koordinat peluru pada sumbu 	
+						ctx.translate(peluru[i].x, peluru[i].y);
+						//rotasi hadap bola	
+						//ctx.rotate(bola[i].sudut * Math.PI);	
+						/* digambar bolanya */
+						ctx.beginPath();
+						ctx.arc(peluru.x, peluru.y,5,0,2*Math.PI, false);	
+						// ctx.arc(0,0,jarijaripeluru,0,2*Math.PI, false);		//jari-jarinya 20
+						ctx.closePath();
+						ctx.fillStyle = peluru[i].warna;
+						ctx.fill();
+						
+						ctx.restore();
+					}
+				}
+				let mati=0;
+				for(var i=0; i<jmlbola; i++){
+					if(bola[i].status<1){
+						mati++;
+					}
+					if(i==jmlbola-1 && mati==jmlbola && udahmenang==0){
+						music.pause();
+						ending.play();
+						ctx.fillRect(0,0,800,600);
+						udahmenang=1;
+						
+					}
+					if(udahmenang==1){
+						document.getElementsByTagName("body")[0].ondblclick = function(){
+							window.location.href="GRAFGA FINALZ STAGE 2.html";
+						}
+						document.getElementsByTagName("body")[0].onclick = function(){
+							music.pause();
+						}
+					}
+				}
+
+
+
+			}
+			setInterval(gambarkan, 20);
+		</script>
+	</body>
+</html>
